@@ -2,19 +2,11 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  Share
+  TouchableOpacity
 } from "react-native"
 
-import * as Clipboard from "expo-clipboard"
 import { useEffect, useState } from "react"
-
-import { BibleService } from "../services/BibleService"
 import { HighlightService } from "../services/HighlightService"
-import { useSettings } from "../context/SettingsContext"
-
-import VerseActionBar from "./VerseActionBar"
-import ColorPalette from "./ColorPalette"
 
 type Props = {
   verseNumber: number
@@ -24,7 +16,7 @@ type Props = {
   fontSize?: number
   isSelected: boolean
   onPress: () => void
-  onClose: () => void
+  refreshKey?: number
 }
 
 export default function VerseItem({
@@ -35,18 +27,15 @@ export default function VerseItem({
   fontSize = 18,
   isSelected,
   onPress,
-  onClose
+  refreshKey
 }: Props) {
 
-  const bibleService = new BibleService()
   const highlightService = new HighlightService()
-  const { bibleVersion } = useSettings()
-
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
 
   useEffect(() => {
     loadHighlight()
-  }, [])
+  }, [refreshKey])
 
   async function loadHighlight() {
     const highlight = await highlightService.getHighlight(
@@ -55,82 +44,55 @@ export default function VerseItem({
       verseNumber
     )
 
-    if (highlight) {
-      setSelectedColor(highlight.color)
-    }
-  }
-
-  function getVerseText() {
-    const bookName = bibleService.getBookName(book, bibleVersion)
-    return `${bookName} ${chapter}:${verseNumber}\n${text}`
-  }
-
-  async function copyVerse() {
-    await Clipboard.setStringAsync(getVerseText())
-    onClose()
-  }
-
-  async function shareVerse() {
-    await Share.share({ message: getVerseText() })
-    onClose()
-  }
-
-  async function applyColor(color: string) {
-    setSelectedColor(color)
-
-    await highlightService.setHighlight({
-      book,
-      chapter,
-      verse: verseNumber,
-      color
-    })
+    setSelectedColor(highlight?.color ?? null)
   }
 
   return (
-    <View>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+      <View style={styles.wrapper}>
 
-      <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+        {/* BASE */}
         <View
           style={[
             styles.container,
-            isSelected && styles.highlight,
             selectedColor && { backgroundColor: selectedColor }
           ]}
         >
           <Text style={styles.number}>{verseNumber}</Text>
           <Text style={[styles.text, { fontSize }]}>{text}</Text>
         </View>
-      </TouchableOpacity>
 
-      {isSelected && (
-        <>
-          <ColorPalette onSelectColor={applyColor} />
+        {/* OVERLAY seleção */}
+        {isSelected && (
+          <View style={styles.overlay} />
+        )}
 
-          <VerseActionBar
-            onCopy={copyVerse}
-            onShare={shareVerse}
-            onOpenColors={() => {}}
-            onClose={onClose}
-          />
-        </>
-      )}
-
-    </View>
+      </View>
+    </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
 
-  container: {
-    flexDirection: "row",
+  wrapper: {
+    position: "relative",
     marginBottom: 10,
-    padding: 6,
-    borderRadius: 6
+    borderRadius: 8,
+    overflow: "hidden"
   },
 
-  highlight: {
+  container: {
+    flexDirection: "row",
+    padding: 8,
+    borderRadius: 8
+  },
+
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255,255,255,0.45)",
     borderWidth: 1,
-    borderColor: "#ccc"
+    borderColor: "rgba(0,0,0,0.2)",
+    borderRadius: 8
   },
 
   number: {

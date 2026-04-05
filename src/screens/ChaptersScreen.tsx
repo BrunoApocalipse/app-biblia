@@ -23,7 +23,7 @@ export default function ChaptersScreen() {
     selectChapter(chapter)
 
     router.push({
-      pathname: "/(tabs)/verses/[book]/[chapter]",
+      pathname: "/(drawer)/(tabs)/verses/[book]/[chapter]",
       params: {
         book: String(book.id),
         chapter: String(chapter)

@@ -2,8 +2,8 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from "react
 import { useEffect, useState } from "react"
 import { router } from "expo-router"
 
-import { HighlightService, Highlight } from "../../src/services/HighlightService"
-import { BibleService } from "../../src/services/BibleService"
+import { HighlightService, Highlight } from "../../../src/services/HighlightService"
+import { BibleService } from "../../../src/services/BibleService"
 
 export default function FavoritesScreen() {
 

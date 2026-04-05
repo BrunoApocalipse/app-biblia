@@ -1,4 +1,4 @@
-import { Drawer } from "expo-router/drawer"
+import { Stack } from "expo-router"
 import { SettingsProvider } from "../src/context/SettingsContext"
 import { BibleReaderProvider } from "../src/context/BibleReaderContext"
 
@@ -6,31 +6,25 @@ export default function RootLayout() {
   return (
     <SettingsProvider>
       <BibleReaderProvider>
-        <Drawer screenOptions={{ headerShown: false }}>
-          <Drawer.Screen
-            name="(tabs)"
-            options={{
-              title: "Bíblia",
-              drawerLabel: "Bíblia"
-            }}
+
+        <Stack screenOptions={{ headerShown: false }}>
+
+          {/* APP PRINCIPAL (com Drawer dentro) */}
+          <Stack.Screen name="(drawer)" />
+
+          {/* MODAIS */}
+          <Stack.Screen
+            name="(modals)/book-selector"
+            options={{ presentation: "modal" }}
           />
 
-          <Drawer.Screen
-            name="favorites"
-            options={{
-              title: "Favoritos",
-              drawerLabel: "Favoritos"
-            }}
+          <Stack.Screen
+            name="(modals)/version-selector"
+            options={{ presentation: "modal" }}
           />
 
-          <Drawer.Screen
-            name="settings"
-            options={{
-              title: "Configurações",
-              drawerLabel: "Configurações"
-            }}
-          />
-        </Drawer>
+        </Stack>
+
       </BibleReaderProvider>
     </SettingsProvider>
   )

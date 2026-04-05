@@ -2,9 +2,9 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native
 import { useState, useCallback } from "react"
 import { router, useFocusEffect } from "expo-router"
 
-import { HighlightService, Highlight } from "../src/services/HighlightService"
-import { BibleService } from "../src/services/BibleService"
-import { useSettings } from "../src/context/SettingsContext"
+import { HighlightService, Highlight } from "../../src/services/HighlightService"
+import { BibleService } from "../../src/services/BibleService"
+import { useSettings } from "../../src/context/SettingsContext"
 
 export default function FavoritesScreen() {
 
